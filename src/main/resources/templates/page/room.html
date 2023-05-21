@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>룸</title>
+
+    <style>
+        .button-bar{
+            width: 200px;
+            height: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<main class="container">
+
+    <h1>방 제목 : [[${roomInfo.roomTitle}]]</h1>
+    <h3>방 설명 : [[${roomInfo.roomContent}]]</h3>
+    <div id="username-page">
+        <div class="username-page-container">
+            <div class="button-bar">
+                <form id="usernameForm" name="usernameForm">
+                    <input type="hidden" id="roomId" th:value="${roomInfo.roomId}" class="form-control" />
+                    <input type="hidden" id="name" value="아직 설정 안한 닉네임." class="form-control" />
+                    <button  type="submit" class="accent username-submit"><h3>채팅 접속</h3></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="chat-page" class="hidden">
+        <div class="chat-container">
+            <div class="connecting">
+                연결중...
+            </div>
+            <ul id="messageArea">
+
+            </ul>
+            <form id="messageForm" name="messageForm">
+                <div class="form-group">
+                    <div class="input-group clearfix">
+                        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" class="form-control"/>
+                        <button type="submit" class="primary">보내기</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
