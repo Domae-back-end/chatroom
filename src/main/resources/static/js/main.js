@@ -30,22 +30,24 @@ function connect(event) {
     event.preventDefault();
 }
 
-
 function onConnected() {
     // Subscribe to the Public Topic
-    stompClient.subscribe('/topic/public/'+roomId.value.trim(), onMessageReceived);
-
+    stompClient.subscribe('/topic/public/'+roomId.value.trim(), onMessageReceived,{roomId : roomId.value.trim()});
     // Tell your username to the server
     stompClient.send("/app/chat.addUser",
         {},
         JSON.stringify({name: username, roomId: roomId.value.trim()})
     )
 
+
     connectingElement.classList.add('hidden');
 }
 
 
 function onError(error) {
+    alert('해당 방은 인원이 꽉 찼습니다.');
+    window.location.href = 'http://localhost:8080/';
+    console.log(error);
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
 }
@@ -68,32 +70,33 @@ function sendMessage(event) {
 
 function onMessageReceived(payload) {
     var message = JSON.parse(payload.body);
+        var messageElement = document.createElement('li');
 
-    var messageElement = document.createElement('li');
+            messageElement.classList.add('chat-message');
 
-        messageElement.classList.add('chat-message');
+            var avatarElement = document.createElement('i');
+            var avatarText = document.createTextNode(message.name[0]);
+            avatarElement.appendChild(avatarText);
+            avatarElement.style['background-color'] = getAvatarColor(message.name);
 
-        var avatarElement = document.createElement('i');
-        var avatarText = document.createTextNode(message.name[0]);
-        avatarElement.appendChild(avatarText);
-        avatarElement.style['background-color'] = getAvatarColor(message.name);
+            messageElement.appendChild(avatarElement);
 
-        messageElement.appendChild(avatarElement);
-
-        var usernameElement = document.createElement('span');
-        var usernameText = document.createTextNode(message.name);
-        usernameElement.appendChild(usernameText);
-        messageElement.appendChild(usernameElement);
+            var usernameElement = document.createElement('span');
+            var usernameText = document.createTextNode(message.name);
+            usernameElement.appendChild(usernameText);
+            messageElement.appendChild(usernameElement);
 
 
-    var textElement = document.createElement('p');
-    var messageText = document.createTextNode(message.message);
-    textElement.appendChild(messageText);
+        var textElement = document.createElement('p');
+        var messageText = document.createTextNode(message.message);
+        textElement.appendChild(messageText);
 
-    messageElement.appendChild(textElement);
+        messageElement.appendChild(textElement);
 
-    messageArea.appendChild(messageElement);
-    messageArea.scrollTop = messageArea.scrollHeight;
+        messageArea.appendChild(messageElement);
+        messageArea.scrollTop = messageArea.scrollHeight;
+
+
 }
 
 
