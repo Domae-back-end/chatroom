@@ -1,6 +1,7 @@
 package com.chatroom.chatroom.config;
 
 import com.chatroom.chatroom.domain.response.ChatMessageResponse;
+import com.chatroom.chatroom.repository.ChatRoomEntityRepository;
 import com.chatroom.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +21,12 @@ import org.springframework.util.MultiValueMap;
 import java.util.HashMap;
 
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class WebScoketInterceptor implements ChannelInterceptor {
 
     @Autowired
-    ChatRoomService chatRoomService;
+    private ChatRoomService chatRoomService;
 
     HashMap<String, Integer> roomList = new HashMap<>();
 
@@ -31,33 +34,25 @@ public class WebScoketInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         MessageHeaders headers = message.getHeaders(); //메세지 들어올때 헤더
-        MultiValueMap<String, String> map= headers.get(StompHeaderAccessor.NATIVE_HEADERS, MultiValueMap.class);
+        MultiValueMap<String, String> map = headers.get(StompHeaderAccessor.NATIVE_HEADERS, MultiValueMap.class);
 
-        if(StompCommand.CONNECT == accessor.getCommand()){
+        if (StompCommand.CONNECT == accessor.getCommand()) {
             System.out.println("처음 접속할때");
-        }else if(StompCommand.SUBSCRIBE == accessor.getCommand()){ //roomId
+        } else if (StompCommand.SUBSCRIBE == accessor.getCommand()) { //roomId
             String chatRoomId = map.getFirst("roomId");
 
-            System.out.println("?! : "+roomList);
-            System.out.println(chatRoomId);
-//            아니 왜 도대체 charRoomService 를 호출하면 오류가 나오지..?
-            System.out.println("?! : "+chatRoomService.check_roomPeople(chatRoomId));
-//
-//            if(roomList.containsKey(chatRoomId)){
-//                if(roomList.get(chatRoomId) > chatRoomService.check_roomPeople(chatRoomId)){
-//                  //throw new IllegalStateException("인원 초과");
-//                }else{
-//                    roomList.put(chatRoomId,roomList.get(chatRoomId)+1);
-//                }
-//            }else{
-//                roomList.put(chatRoomId,1);
-//            }
-            System.out.println(roomList);
-
+            if (!(roomList.containsKey(chatRoomId))) {
+                roomList.put(chatRoomId, 1);
+            }else {
+                roomList.put(chatRoomId, roomList.get(chatRoomId) + 1);
+            }
+            if (roomList.get(chatRoomId) > chatRoomService.check_roomPeople(chatRoomId)) {
+                throw new IllegalStateException("인원 초과");
+            }
             System.out.println("주소 구독할때");
-        }else if(StompCommand.SEND == accessor.getCommand()){
+        } else if (StompCommand.SEND == accessor.getCommand()) {
             System.out.println("메세지 보낼때");
-        }else if(StompCommand.DISCONNECT == accessor.getCommand()){
+        } else if (StompCommand.DISCONNECT == accessor.getCommand()) {
             System.out.println(map);
             System.out.println("접속 끊을때");
         }

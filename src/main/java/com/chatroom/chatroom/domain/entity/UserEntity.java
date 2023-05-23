@@ -1,5 +1,6 @@
 package com.chatroom.chatroom.domain.entity;
 
+import com.chatroom.chatroom.domain.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

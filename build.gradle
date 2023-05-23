@@ -36,6 +36,10 @@ dependencies {
 	//WebSocket
 	implementation 'org.json:json:20160810'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	//Security
+	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

@@ -14,6 +14,7 @@ public class MainController {
     @Autowired
     private ChatRoomService chatRoomService;
 
+
     @RequestMapping("/")
     public String main_page(
             @RequestParam(required = false) String category,

@@ -42,8 +42,7 @@ public class ChatRoomService {
     }
 
     public int check_roomPeople(String roomId){
-        System.out.println();
-        return 1;
+        return chatRoomEntityRepository.findById(Long.parseLong(roomId)).get().getPeople();
     }
 
 
