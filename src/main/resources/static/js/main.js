@@ -45,8 +45,8 @@ function onConnected() {
 
 
 function onError(error) {
-    alert('해당 방은 인원이 꽉 찼습니다.');
-    window.location.href = 'http://localhost:8080/';
+//    alert('해당 방은 인원이 꽉 찼습니다.');
+//    window.location.href = 'http://localhost:8080/';
     console.log(error);
     connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
     connectingElement.style.color = 'red';
