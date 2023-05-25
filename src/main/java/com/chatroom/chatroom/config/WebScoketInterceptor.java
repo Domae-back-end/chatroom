@@ -49,6 +49,7 @@ public class WebScoketInterceptor implements ChannelInterceptor {
             if (roomList.get(chatRoomId) > chatRoomService.check_roomPeople(chatRoomId)) {
                 throw new IllegalStateException("인원 초과");
             }
+
             System.out.println("주소 구독할때");
         } else if (StompCommand.SEND == accessor.getCommand()) {
             System.out.println("메세지 보낼때");

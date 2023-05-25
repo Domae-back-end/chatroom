@@ -45,6 +45,4 @@ public class ChatRoomService {
         return chatRoomEntityRepository.findById(Long.parseLong(roomId)).get().getPeople();
     }
 
-
-
 }

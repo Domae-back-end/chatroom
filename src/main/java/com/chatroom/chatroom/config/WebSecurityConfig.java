@@ -1,52 +1,56 @@
 package com.chatroom.chatroom.config;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.chatroom.chatroom.service.LoginFailHandler;
+import com.chatroom.chatroom.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
-import java.io.IOException;
 
 @Configuration
 public class WebSecurityConfig {
 
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-//
-//        return http.build();
-//    }
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private LoginFailHandler loginFailHandler;
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .authorizeHttpRequests((requset) -> requset
-                                .requestMatchers("/login","/register").permitAll()
-                                .anyRequest().authenticated()
+                .csrf(csrf ->
+                        csrf.disable()
                 )
-                .formLogin((form) -> form
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login", "/errer","/test",
+                                "/css/**",
+                                "/js/**").permitAll()
+                        .requestMatchers("/").hasRole("USER")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(login -> login
                         .loginPage("/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .successForwardUrl("/")
+                        .failureHandler(loginFailHandler)
+                        .defaultSuccessUrl("/")
+                        .permitAll()
                 )
-                .logout((logout) -> logout.permitAll());;
+                .logout((logout) -> logout
+                        .logoutSuccessUrl("/login")
+                        .permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/errer"))
+                .sessionManagement(session -> session
+                        .maximumSessions(1) //세션 최대 허용 수
+                        .maxSessionsPreventsLogin(false) //중복 로그인
+                );
 
         return http.build();
     }
+
 
 }
