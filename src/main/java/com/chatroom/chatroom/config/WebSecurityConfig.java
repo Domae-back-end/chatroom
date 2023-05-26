@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -24,9 +25,11 @@ public class WebSecurityConfig {
                         csrf.disable()
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/errer","/test",
-                                "/css/**",
-                                "/js/**").permitAll()
+                        .requestMatchers(
+                                "/login",
+                                "/errer",
+                                "/register"
+                                ).permitAll()
                         .requestMatchers("/").hasRole("USER")
                         .anyRequest().authenticated()
                 )
@@ -52,5 +55,10 @@ public class WebSecurityConfig {
         return http.build();
     }
 
+    //경로파일들을 제외하고.
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        return (web) -> web.ignoring().requestMatchers("/css/**","/js/**");
+    }
 
 }

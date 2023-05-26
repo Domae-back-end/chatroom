@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+//TODO:record 로 수정할것.
 @Getter
 public class ErrorResponse {
 

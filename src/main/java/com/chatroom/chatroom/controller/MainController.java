@@ -45,7 +45,6 @@ public class MainController {
     public String errer(){
         return "errer/errer";
     }
-
     @RequestMapping("/login")
     public String login(){
         return "join/login";
