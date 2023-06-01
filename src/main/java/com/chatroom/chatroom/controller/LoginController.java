@@ -18,11 +18,11 @@ public class LoginController {
 //
 //    }
 
-    @RequestMapping(value = "/register",method = RequestMethod.POST)
-    public EntityResponse<LoginResponse> api_login(){
-
-
-    }
+//    @RequestMapping(value = "/register",method = RequestMethod.POST)
+//    public EntityResponse<LoginResponse> api_login(){
+//
+//
+//    }
 
 
 }

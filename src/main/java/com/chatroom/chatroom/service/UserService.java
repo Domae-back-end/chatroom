@@ -13,9 +13,9 @@ public class UserService {
 
     private final UserEntityRepository entityRepository;
 
-    public UserDTO find_user(String userid, String password){
-        UserEntity use
-    }
+//    public UserDTO find_user(String userid, String password){
+//        UserEntity use
+//    }
 
 
 }
